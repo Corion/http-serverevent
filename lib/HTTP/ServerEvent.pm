@@ -50,7 +50,7 @@ sub as_string {
                   map { split /(?:\x0D\x0A?|\x0A)/ }
                   @{ $options{ data } || [] };
     
-    return ((join "\x0D", @result) . "\x0D")
+    return ((join "\x0D\x0A", @result) . "\x0D\x0A\x0D\x0A")
 };
 
 1;
