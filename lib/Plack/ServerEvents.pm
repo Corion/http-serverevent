@@ -15,6 +15,12 @@ sub countdown {
           return [ 200, ['Content-Type', 'text/html'], [$html] ]
       };
 
+      if( ! $env->{"psgi.streaming"}) {
+          my $err= "Server does not support streaming responses";
+          warn $err;
+          return [ 500, ['Content-Type', 'text/plain'], [$err] ]
+      };
+
       # immediately starts the response and stream the content
       return sub {
           my $responder = shift;
