@@ -26,14 +26,12 @@ sub countdown {
               after => 1,
               interval => 1,
               cb => sub {
-                  warn "Countdown at " . $countdown--;
+                  $countdown--;
                   if (0 < $countdown) {
                       my $event= HTTP::ServerEvent->as_string(
                               data => $countdown,
                               event => 'tick',
                           );
-                      #use Data::Dumper;
-                      #warn "event: " . Dumper $event;
 
                       $writer->write($event);
                   } else {
@@ -60,7 +58,6 @@ __DATA__
   events.addEventListener('tick', function(event) {
     var out= document.getElementById("my_console");
     out.appendChild(document.createTextNode(event.data));
-    // out.innerHTML += event.data;
   }, false);
 </script>
 </head>
