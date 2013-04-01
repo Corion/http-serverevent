@@ -24,10 +24,8 @@ sub as_string {
     my ($self, %options) = @_;
     
     # Better be on the safe side
-    croak "No type given"
-        unless length $options{ type };
-    croak "Newline or null detected in event type '$options{ type }'. Possible event injection."
-        if $options{ type } =~ /[\x0D\x0A\x00]/;
+    croak "Newline or null detected in event type '$options{ event }'. Possible event injection."
+        if $options{ event } =~ /[\x0D\x0A\x00]/;
     
     if( !$options{ data }) {
         $options{ data }= [];
@@ -35,7 +33,11 @@ sub as_string {
     $options{ data } = [ $options{ data }]
         unless 'ARRAY' eq ref $options{ data };
     
-    my @result= "event:$options{ type }";
+    my @result;
+    if( defined $options{ event }) {
+        push @result, "event: $options{ event }";
+    };
+    if(defined $options{ id }) {
     if(my $id= delete $options{ id }) {
         push @result, "id: $id";
     };
