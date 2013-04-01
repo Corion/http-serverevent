@@ -30,7 +30,7 @@ sub countdown {
                   if (0 < $countdown) {
                       my $event= HTTP::ServerEvent->as_string(
                               data => $countdown,
-                              type => 'tick',
+                              event => 'tick',
                           );
                       #use Data::Dumper;
                       #warn "event: " . Dumper $event;
