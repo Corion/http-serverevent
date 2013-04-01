@@ -38,12 +38,11 @@ sub as_string {
         push @result, "event: $options{ event }";
     };
     if(defined $options{ id }) {
-    if(my $id= delete $options{ id }) {
-        push @result, "id: $id";
+        push @result, "id: $options{ id }";
     };
     
-    if( my $retry= delete $options{ retry }) {
-        push @result, "retry: $retry";
+    if( defined $options{ retry }) {
+        push @result, "retry: $options{ retry }";
     };
     
     push @result, map {"data: $_" }
