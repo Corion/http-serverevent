@@ -2,6 +2,9 @@ package HTTP::ServerEvent;
 use strict;
 use Carp qw( croak );
 
+use vars qw($VERSION);
+$VERSION = '0.01';
+
 =head1 NAME
 
 HTTP::ServerEvent - create strings for HTTP Server Sent Events
