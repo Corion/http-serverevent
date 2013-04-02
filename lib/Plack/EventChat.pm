@@ -9,19 +9,19 @@ $VERSION = '0.01';
 my $html= join "", <DATA>;
 
 sub broadcast{
-    my ($type, $payload, @listeners) = @_;
+    my ($type, $payload, $listeners) = @_;
     my $event= HTTP::ServerEvent->as_string(
         data => $payload,
         event => $type,
     );
 
-    for (@listeners) {
+    for (@$listeners) {
         eval {
             $_->write($event);
             1;
         } or undef $_;
     };
-    @listeners= grep { $_ } @listeners;
+    @$listeners= grep { $_ } @$listeners;
 };
 
 # Creates a PSGI responder
@@ -39,7 +39,7 @@ sub chat_server {
           if( $env->{QUERY_STRING}=~ /msg=(.*?)([;&]|$)/ ) {
               $msg= $1;
               warn "chat>$msg\n";
-              broadcast( 'chat', $msg, @listeners );
+              broadcast( 'chat', $msg, \@listeners );
           };
           return [ 302, [], [<<CHAT]];
 <html>
