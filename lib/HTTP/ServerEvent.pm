@@ -62,4 +62,32 @@ L<https://hacks.mozilla.org/2011/06/a-wall-powered-by-eventsource-and-server-sen
 
 L<http://www.html5rocks.com/en/tutorials/eventsource/basics/?ModPagespeed=noscript>
 
+=head1 REPOSITORY
+
+The public repository of this module is 
+L<http://github.com/Corion/http-serverevent>.
+
+=head1 SUPPORT
+
+The public support forum of this module is
+L<http://perlmonks.org/>.
+
+=head1 BUG TRACKER
+
+Please report bugs in this module via the RT CPAN bug queue at
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=HTTP-ServerEvent>
+or via mail to L<http-serverevent-Bugs@rt.cpan.org>.
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2013-2013 by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
+
 =cut
