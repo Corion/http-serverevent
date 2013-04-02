@@ -8,19 +8,47 @@ $VERSION = '0.01';
 
 my $html= join "", <DATA>;
 
+sub broadcast{
+    my ($type, $payload, @listeners) = @_;
+    my $event= HTTP::ServerEvent->as_string(
+        data => $payload,
+        event => $type,
+    );
+
+    for (@listeners) {
+        eval {
+            $_->write($event);
+            1;
+        } or undef $_;
+    };
+    @listeners= grep { $_ } @listeners;
+};
+
 # Creates a PSGI responder
 sub chat_server {
     
     my (%users);
     my @chat;
+    my @listeners;
     
     my $app= sub {
       my $env = shift;
 
-      if( $env->{PATH_INFO} eq '/join' ) {
-          # If we don't have a user name, assign a random username
-          # 
-          return [ 302, ['Location' => '//localhost:5000/'], []];
+      if( $env->{PATH_INFO} eq '/chat' ) {
+          my $msg;
+          if( $env->{QUERY_STRING}=~ /msg=(.*?)([;&]|$)/ ) {
+              $msg= $1;
+              warn "chat>$msg\n";
+              broadcast( 'chat', $msg, @listeners );
+          };
+          return [ 302, [], [<<CHAT]];
+<html>
+<form action="/chat" method="GET" enctype="multipart/form-data">
+    <input name="msg" type="text">
+    <button name="send">Chat</button>
+</form>
+</html>
+CHAT
       };
 
       if( $env->{PATH_INFO} ne '/events' ) {
@@ -39,30 +67,10 @@ sub chat_server {
           my $responder = shift;
           my $writer = $responder->(
               [ 200, [ 'Content-Type', 'text/event-stream' ]]);
-          my $countdown= 10;
-          
-          my $w; $w= AnyEvent->timer(
-              after => 1,
-              interval => 1,
-              cb => sub {
-                  $countdown--;
-                  if (0 < $countdown) {
-                      my $event= HTTP::ServerEvent->as_string(
-                              data => $countdown,
-                              event => 'tick',
-                          );
-
-                      $writer->write($event);
-                  } else {
-                      warn "Boom";
-                      undef $w;
-                      $writer->close;
-                  }
-              }
-          );
+          push @listeners, $writer;
+          broadcast( 'count', 0+@listeners );
       };
   };
-
 };
 
 1;
@@ -73,15 +81,22 @@ __DATA__
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <script language="javascript">
   var events = new EventSource('/events');
-  // Subscribe to "tick" event
-  events.addEventListener('tick', function(event) {
-    var out= document.getElementById("my_console");
+  // Subscribe to "chat" event
+  events.addEventListener('chat', function(event) {
+    var out= document.getElementById("chat");
+    var msg= document.createElement("div");
+    msg.appendChild(document.createTextNode(event.data));
+    out.appendChild( msg );
+  }, false);
+  events.addEventListener('count', function(event) {
+    var out= document.getElementById("count");
+    out.deleteChildren();
     out.appendChild(document.createTextNode(event.data));
   }, false);
 </script>
 </head>
-<h1>Countdown</h1>
-<div id="my_console">
+<h1>Chat (<span id="count">0</span> listeners)</h1>
+<div id="chat">
 </div>
-<h2>...</h2>
+<iframe src="/chat"></iframe>
 </html>
