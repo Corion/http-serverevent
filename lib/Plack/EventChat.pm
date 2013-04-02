@@ -3,6 +3,9 @@ use strict;
 use AnyEvent;
 use HTTP::ServerEvent;
 
+use vars qw($VERSION);
+$VERSION = '0.01';
+
 my $html= join "", <DATA>;
 
 # Creates a PSGI responder
