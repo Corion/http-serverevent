@@ -13,6 +13,7 @@ sub broadcast{
     my $event= HTTP::ServerEvent->as_string(
         data => $payload,
         event => $type,
+        id => time(),
     );
 
     for (@$listeners) {
@@ -38,11 +39,23 @@ sub chat_server {
           my $msg;
           if( $env->{QUERY_STRING}=~ /msg=(.*?)([;&]|$)/ ) {
               $msg= $1;
+              push @chat, [time, $msg];
               broadcast( 'chat', $msg, \@listeners );
           };
+          
+          # prune the chat store:
+          my $cutoff= time() - 5*60;
+          @chat= grep { $_->[0] > $cutoff } @chat;
+          
+          # Keep only up to 500 lines, ever
+          if( @chat > 500 ) {
+              splice @chat, 0, @chat-500;
+          };
+          
           return [ 302, [], [<<CHAT]];
 <html>
-<form action="/chat" method="GET" enctype="multipart/form-data">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<form action="/chat" method="GET">
     <input name="msg" type="text">
     <button name="send">Chat</button>
 </form>
@@ -66,8 +79,21 @@ CHAT
           my $responder = shift;
           my $writer = $responder->(
               [ 200, [ 'Content-Type', 'text/event-stream' ]]);
+          
+          if (my $last= $env->{HTTP_LAST_EVENT_ID}) {
+              # bring client up to date with the current chat
+              for( grep { $_->[0] > $last} @chat ) {
+                  $writer->write(
+                      event => 'chat',
+                      id => $_->[0],
+                      data => $_->[1],
+                  );
+              };
+          };
+          
+          warn 0+@listeners;
           push @listeners, $writer;
-          broadcast( 'count', 0+@listeners );
+          broadcast( 'count', 0+@listeners, \@listeners );
       };
   };
 };
@@ -89,7 +115,10 @@ __DATA__
   }, false);
   events.addEventListener('count', function(event) {
     var out= document.getElementById("count");
-    out.deleteChildren();
+    var c;
+    while (c= out.firstChild) {
+        out.removeChild(c);
+    };
     out.appendChild(document.createTextNode(event.data));
   }, false);
 </script>
