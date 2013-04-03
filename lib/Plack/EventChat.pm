@@ -38,7 +38,6 @@ sub chat_server {
           my $msg;
           if( $env->{QUERY_STRING}=~ /msg=(.*?)([;&]|$)/ ) {
               $msg= $1;
-              warn "chat>$msg\n";
               broadcast( 'chat', $msg, \@listeners );
           };
           return [ 302, [], [<<CHAT]];

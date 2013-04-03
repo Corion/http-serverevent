@@ -22,7 +22,6 @@ HTTP::ServerEvent - create strings for HTTP Server Sent Events
 
 =cut
 
-    use Data::Dumper;
 sub as_string {
     my ($self, %options) = @_;
     
