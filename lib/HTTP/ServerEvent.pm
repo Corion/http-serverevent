@@ -56,6 +56,14 @@ sub as_string {
 
 1;
 
+=head1 Last-Event-Id Header
+
+If you're sending events, you may want to look at the C<< Last-Event-Id >>
+HTTP header. This header is sent by the C<EventSource> object when
+reestablishing a connection that was intermittently lost. You can use this
+to bring the reconnecting client up to date with the current state
+instead of transmitting the complete state.
+
 =head1 SEE ALSO
 
 L<https://developer.mozilla.org/en-US/docs/Server-sent_events/Using_server-sent_events>
