@@ -3,6 +3,19 @@ use strict;
 use AnyEvent;
 use HTTP::ServerEvent;
 
+=head1 NAME
+
+Plack::Example::ServerEvents - Sample Server-Sent Events server
+
+=head1 SYNOPSIS
+
+  plackup -MPlack::Example::ServerEvents -e "Plack::Example::ServerEvents->countdown"
+
+=cut
+
+use vars qw($VERSION);
+$VERSION = '0.01';
+
 my $html= join "", <DATA>;
 
 # Creates a PSGI responder
@@ -53,6 +66,26 @@ sub countdown {
 };
 
 1;
+
+=head1 SEE ALSO
+
+The source code of this module
+
+L<HTTP::ServerEvent>
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2013-2013 by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
+
+=cut
 
 __DATA__
 <html>

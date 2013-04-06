@@ -4,6 +4,16 @@ use AnyEvent;
 use HTTP::ServerEvent;
 use Plack::Request;
 
+=head1 NAME
+
+Plack::Example::EventChat - Sample Server-Sent Events chat server
+
+=head1 SYNOPSIS
+
+  plackup -MPlack::Example::EventChat -e "Plack::Example::EventChat->chat_server"
+
+=cut
+
 use vars qw($VERSION);
 $VERSION = '0.01';
 
@@ -100,6 +110,26 @@ CHAT
 };
 
 1;
+
+=head1 SEE ALSO
+
+The source code of this module
+
+L<HTTP::ServerEvent>
+
+=head1 AUTHOR
+
+Max Maischein C<corion@cpan.org>
+
+=head1 COPYRIGHT (c)
+
+Copyright 2013-2013 by Max Maischein C<corion@cpan.org>.
+
+=head1 LICENSE
+
+This module is released under the same terms as Perl itself.
+
+=cut
 
 __DATA__
 <html>
