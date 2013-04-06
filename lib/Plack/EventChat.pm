@@ -2,6 +2,7 @@ package Plack::EventChat;
 use strict;
 use AnyEvent;
 use HTTP::ServerEvent;
+use Plack::Request;
 
 use vars qw($VERSION);
 $VERSION = '0.01';
@@ -33,12 +34,12 @@ sub chat_server {
     my @listeners;
     
     my $app= sub {
-      my $env = shift;
+      my $env= shift;
+      my $req= Plack::Request->new( $env );
+      my $path= $req->path_info;
 
-      if( $env->{PATH_INFO} eq '/chat' ) {
-          my $msg;
-          if( $env->{QUERY_STRING}=~ /msg=(.*?)([;&]|$)/ ) {
-              $msg= $1;
+      if( '/chat' eq $path) {
+          if((my $msg) = $req->body_parameters->{'msg'} ) {
               push @chat, [time, $msg];
               broadcast( 'chat', $msg, \@listeners );
           };
@@ -52,10 +53,10 @@ sub chat_server {
               splice @chat, 0, @chat-500;
           };
           
-          return [ 302, [], [<<CHAT]];
+          return [ 200, [ 'Location' => '/chat' ], [<<'CHAT']];
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<form action="/chat" method="GET">
+<form action="/chat" method="POST" enctype="application/x-www-form-urlencoded">
     <input name="msg" type="text">
     <button name="send">Chat</button>
 </form>
@@ -63,7 +64,7 @@ sub chat_server {
 CHAT
       };
 
-      if( $env->{PATH_INFO} ne '/events' ) {
+      if( '/events' ne $path ) {
           # Send the JS+HTML
           return [ 200, ['Content-Type', 'text/html'], [$html] ]
       };
