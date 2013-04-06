@@ -14,11 +14,50 @@ HTTP::ServerEvent - create strings for HTTP Server Sent Events
 =head2 C<< ->as_string( %options ) >>
 
   return HTTP::ServerEvent->as_string(
-    type => "ping",
+    event => "ping",
     data => time(),
-    retry => 5000, # retry in 5 seconds
+    retry => 5000, # retry in 5 seconds if disconnected
     id => $counter++,
   );
+
+Returns a string that can be sent as a server-sent event
+through the socket.
+
+The allowed options are:
+
+=over 4
+
+=item *
+
+C<event> - the type of event (optional). This is the
+event type you will want to listen to on the other side.
+Newlines or null characters in the event type are
+treated as a fatal error.
+
+=item *
+
+C<data> - the data to be sent. This can be either a string
+or an array reference of strings. Note that embedded newlines
+(either C<\x{0d}> , C<\x{0a}> or C<\x{0d}\x{0a}> ) will
+be interpreted as newlines and be normalized to the C<\x{0d}\x{0a}>
+pairs that are sent over the wire.
+
+=item *
+
+C<id> - the event id. If you send this, a client will send the
+C<Last-Event-Id> header when reconnecting, allowing you to send
+the events missed while offline.
+Newlines or null characters in the event id are
+treated as a fatal error.
+
+=item *
+
+C<retry> - the amount of miliseconds to wait before reconnecting
+if the connection is lost.
+Newlines or null characters in the retry interval are
+treated as a fatal error.
+
+=back
 
 =cut
 
@@ -26,8 +65,10 @@ sub as_string {
     my ($self, %options) = @_;
     
     # Better be on the safe side
-    croak "Newline or null detected in event type '$options{ event }'. Possible event injection."
-        if $options{ event } =~ /[\x0D\x0A\x00]/;
+    for my $key (qw( event id retry )) {
+        croak "Newline or null detected in event type '$options{ $key }'. Possible event injection."
+            if defined $options{ $key } and $options{ $key } =~ /[\x0D\x0A\x00]/;
+    };
     
     if( !$options{ data }) {
         $options{ data }= [];
