@@ -1,4 +1,4 @@
-package Plack::ServerEvents;
+package Plack::Example::ServerEvents;
 use strict;
 use AnyEvent;
 use HTTP::ServerEvent;
