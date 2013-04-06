@@ -1,4 +1,4 @@
-package Plack::EventChat;
+package Plack::Example::EventChat;
 use strict;
 use AnyEvent;
 use HTTP::ServerEvent;
