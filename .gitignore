@@ -11,7 +11,7 @@ sessions/
 logs/
 ^images/
 MYMETA.*
-App-ImapBlog-*/
-App-ImapBlog-*.tar
-App-ImapBlog-*.tar.gz
+HTTP-ServerEvent-*/
+HTTP-ServerEvent-*.tar
+HTTP-ServerEvent-*.tar.gz
 config.yml
