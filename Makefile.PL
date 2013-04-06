@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME                => 'HTTP::ServerEvents',
+    NAME                => 'HTTP::ServerEvent',
     AUTHOR              => q{Max Maischein <corion@cpan.org>},
     VERSION_FROM        => 'lib/HTTP/ServerEvent.pm',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002
