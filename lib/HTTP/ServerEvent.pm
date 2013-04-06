@@ -97,6 +97,19 @@ sub as_string {
 
 1;
 
+=head1 Javascript EventSource object
+
+To receive events on the other side, usually in a browser,
+you will want to instantiate an C<EventSource> object.
+
+  var events = new EventSource('/events');
+  // Subscribe to "tick" event
+  events.addEventListener('tick', function(event) {
+    var out= document.getElementById("my_console");
+    out.appendChild(document.createTextNode(event.data));
+  }, false);
+
+
 =head1 Last-Event-Id Header
 
 If you're sending events, you may want to look at the C<< Last-Event-Id >>
