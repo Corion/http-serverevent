@@ -14,7 +14,7 @@ Plack::Example::ServerEvents - Sample Server-Sent Events server
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 my $html= join "", <DATA>;
 

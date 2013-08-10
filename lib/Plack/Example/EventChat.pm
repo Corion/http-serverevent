@@ -15,7 +15,7 @@ Plack::Example::EventChat - Sample Server-Sent Events chat server
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 my $html= join "", <DATA>;
 
