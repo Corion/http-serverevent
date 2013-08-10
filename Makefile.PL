@@ -15,4 +15,9 @@ WriteMakefile(
         'Carp'       => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+    META_MERGE          => {
+        resources           => {
+            repository          =>  'https://github.com/Corion/http-serverevent',
+        },
+    },
 );
